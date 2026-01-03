@@ -1057,6 +1057,27 @@
              * - 欄位：題號, 類型, 反應, 正確, 反應時間(ms)
              */
             exportToCSV: function() {
+                // ✨ 步驟 1：使用者確認對話框
+                const confirmed = confirm(
+                    '📊 資料匯出說明\n\n' +
+                    '即將匯出遊戲表現資料為 CSV 檔案\n\n' +
+                    '檔案內容包含：\n' +
+                    '• 試題編號\n' +
+                    '• 刺激類型（星星/叉叉）\n' +
+                    '• 是否按下按鈕\n' +
+                    '• 答題正確性\n' +
+                    '• 反應時間\n\n' +
+                    '此資料僅供研究或教學使用\n' +
+                    '不包含任何個人隱私資訊\n\n' +
+                    '是否繼續匯出？'
+                );
+                
+                // ✨ 步驟 2：使用者取消則返回
+                if (!confirmed) {
+                    console.log('使用者取消匯出');
+                    return;
+                }
+                
                 // 建立 CSV 標題行
                 let csvContent = '題號,類型,反應,正確,反應時間(ms)\n';
                 
@@ -1073,10 +1094,21 @@
                     csvContent += row + '\n';
                 });
                 
+                // ✨ 步驟 3：記錄資料筆數（方便除錯）
+                const recordCount = GameState.trialDataRecords.length;
+                console.log(`準備匯出 ${recordCount} 筆資料`);
+                
                 // 觸發下載
-                this.downloadFile(csvContent, this.generateFileName());
+                const fileName = this.generateFileName();
+                this.downloadFile(csvContent, fileName);
+                
+                // ✨ 步驟 4：顯示成功訊息
+                alert(
+                    `✅ 資料匯出成功！\n\n` +
+                    `檔案名稱：${fileName}\n` +
+                    `資料筆數：${recordCount} 筆`
+                );
             },
-            
             /**
              * 產生檔案名稱
              * 
